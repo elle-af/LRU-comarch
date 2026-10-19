@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class LRU {
 
+    //LU
     // Frame table that evicts its least recently used page when it overflows
     static class LRUFrames extends LinkedHashMap<Integer, Boolean> {
         private final int capacity;
@@ -24,11 +25,11 @@ public class LRU {
         }
     }
 
+    //ALFARO
     // Greatest common divisor, used to reduce the hit ratio to lowest terms
     static int gcd(int a, int b) {
         return b == 0 ? a : gcd(b, a % b);
     }
-
     // Prints the table (reference row, H/* row, then one row per used frame) up to column upTo
     static void printTable(int[] refs, boolean[] hit, int[][] table, int upTo, int numFrames) {
         StringBuilder sb = new StringBuilder();
@@ -50,6 +51,8 @@ public class LRU {
         System.out.print(sb);
     }
 
+
+    //RECTO
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -85,8 +88,8 @@ public class LRU {
             if (ok) refs = temp;
         }
 
+        //GLER
         int total = refs.length;
-
         // Header
         StringBuilder input = new StringBuilder();
         for (int i = 0; i < total; i++) {
@@ -101,6 +104,8 @@ public class LRU {
         System.out.println("H = HIT, * = MISS (page loaded). Each row is one frame; blank = empty.");
         System.out.println("---------------------------------------------------------------");
 
+
+        //MASILLAM
         LRUFrames cache = new LRUFrames(numFrames);
         int[] slots = new int[numFrames];            // what each frame currently holds
         for (int i = 0; i < numFrames; i++) slots[i] = -1;
@@ -108,6 +113,8 @@ public class LRU {
         boolean[] hit = new boolean[total];
         int hits = 0;
 
+
+        //JALILULA
         for (int step = 0; step < total; step++) {
             sc.nextLine(); // wait for the user to press ENTER
             int page = refs[step];
@@ -138,6 +145,8 @@ public class LRU {
                 slots[target] = page;
             }
 
+
+            //ARAWANGSA
             for (int f = 0; f < numFrames; f++) table[f][step] = slots[f];
 
             System.out.println("Step " + (step + 1) + "/" + total + ": page " + page + " -> " + result);
