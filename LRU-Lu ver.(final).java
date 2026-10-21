@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -101,15 +103,13 @@ public class LRU {
         System.out.println("Input: " + input);
         System.out.println();
         System.out.println("Press ENTER to show each step one at a time.");
-        System.out.println("H = HIT, * = MISS (page loaded). Each row is one frame; blank = empty.");
+        System.out.println("H = HIT, * = MISS (page loaded). Row 1 = most recently used, last row = least recently used.");
         System.out.println("---------------------------------------------------------------");
 
 
         //MASILLAM
         LRUFrames cache = new LRUFrames(numFrames);
-        int[] slots = new int[numFrames];            // what each frame currently holds
-        for (int i = 0; i < numFrames; i++) slots[i] = -1;
-        int[][] table = new int[numFrames][total];   // frame contents after every step
+        int[][] table = new int[numFrames][total];   // pages in each row after every step
         boolean[] hit = new boolean[total];
         int hits = 0;
 
@@ -128,26 +128,21 @@ public class LRU {
             } else {
                 cache.lastRemoved = null;
                 cache.put(page, true); // load page; may evict the LRU page
-                int target = -1;
-                if (cache.lastRemoved != null) {
-                    // all frames full: the new page takes the removed page's frame
-                    for (int i = 0; i < numFrames; i++) {
-                        if (slots[i] == cache.lastRemoved) { target = i; break; }
-                    }
-                    result = "MISS, removed " + cache.lastRemoved;
-                } else {
-                    // a frame was still empty: use the first one
-                    for (int i = 0; i < numFrames; i++) {
-                        if (slots[i] == -1) { target = i; break; }
-                    }
-                    result = "MISS";
-                }
-                slots[target] = page;
+                result = (cache.lastRemoved != null)
+                        ? "MISS, removed " + cache.lastRemoved
+                        : "MISS";
             }
 
 
             //ARAWANGSA
-            for (int f = 0; f < numFrames; f++) table[f][step] = slots[f];
+            // The map goes from least recent to most recent, so read it backwards:
+            // row 1 = most recently used, last row = least recently used
+            for (int f = 0; f < numFrames; f++) table[f][step] = -1;
+            List<Integer> pages = new ArrayList<>(cache.keySet());
+            int row = 0;
+            for (int k = pages.size() - 1; k >= 0; k--) {
+                table[row++][step] = pages.get(k);
+            }
 
             System.out.println("Step " + (step + 1) + "/" + total + ": page " + page + " -> " + result);
             printTable(refs, hit, table, step, numFrames);
